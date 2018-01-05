@@ -1,0 +1,56 @@
+resource_registry:
+  OS::TripleO::Compute::Net::SoftwareConfig: /home/stack/templates/nic-configs/compute.yaml
+  OS::TripleO::Controller::Net::SoftwareConfig: /home/stack/templates/nic-configs/controller.yaml
+
+parameter_defaults:
+  CloudDomain: 'dereklab'
+
+  # Gateway router for the provisioning network (or Undercloud IP)
+  ControlPlaneDefaultRoute: 10.128.0.11
+  ControlPlaneSubnetCidr: '24'
+
+  # The IP address of the EC2 metadata server. Generally the IP of the Undercloud
+  EC2MetadataIp: 10.128.0.11
+  # Define the DNS servers (maximum 2) for the overcloud nodes
+  DnsServers: ["10.68.5.26","10.38.5.26"]
+
+  ExternalNetCidr: 192.168.0.0/24
+  # Leave room for floating IPs in the External allocation pool
+  ExternalAllocationPools: [{"start": "192.168.0.50", "end": "192.168.0.99"}]
+  # Set to the router gateway on the external network
+  ExternalInterfaceDefaultRoute: 192.168.0.1
+  # I don't think we need to setup vlan for External
+  # ExternalNetworkVlanID: 2
+
+  # I will not put network isolation, so these setting is useless
+  InternalApiNetCidr: 192.168.101.0/24
+  InternalApiAllocationPools: [{"start": "192.168.101.210", "end": "192.168.101.250"}]
+  #InternalApiNetworkVlanID: 101
+
+  StorageNetCidr: 192.168.102.0/24
+  StorageAllocationPools: [{"start": "192.168.102.210", "end": "192.168.102.250"}]
+  #StorageNetworkVlanID: 102
+
+  StorageMgmtNetCidr: 192.168.103.0/24
+  StorageMgmtAllocationPools: [{"start": "192.168.103.210", "end": "192.168.103.250"}]
+  #StorageMgmtNetworkVlanID: 103
+
+  TenantNetCidr: 192.168.104.0/24
+  TenantAllocationPools: [{"start": "192.168.104.210", "end": "192.168.104.250"}]
+  #TenantNetworkVlanID: 104
+
+  # Set to "br-ex" if using floating IPs on native VLAN on bridge br-ex
+  NeutronExternalNetworkBridge: "''"
+
+  # List of Neutron network types for tenant networks (will be used in order)
+  #NeutronNetworkType: 'vxlan,vlan'
+  NeutronNetworkType: 'vxlan'
+  # The tunnel type for the tenant network (vxlan or gre). Set to '' to disable tunneling.
+  NeutronTunnelTypes: 'vxlan'
+  # Neutron VLAN ranges per network, for example 'datacentre:1:499,tenant:500:1000':
+  #NeutronNetworkVLANRanges: 'datacentre:1:1000'
+  #
+  # Customize bonding options, e.g. "mode=4 lacp_rate=1 updelay=1000 miimon=100"
+  # for Linux bonds w/LACP, or "bond_mode=active-backup" for OVS active/backup.
+ # BondInterfaceOvsOptions: "bond_mode=active-backup"
+
